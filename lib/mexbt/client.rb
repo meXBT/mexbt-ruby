@@ -10,6 +10,9 @@ module Mexbt
     end
 
     def auth_params
+      if Mexbt.public_key.nil? || Mexbt.private_key.nil?
+        raise "You must configure your API keys!"
+      end
       nonce = (Time.now.to_f*10000).to_i
       {
         apiKey: Mexbt.public_key,
