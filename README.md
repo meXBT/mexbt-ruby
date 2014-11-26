@@ -7,7 +7,7 @@ returns it as-is.
 
 If using bundler simply this to your Gemfile:
 
-    gem 'bitstamp'
+    gem 'mexbt'
 
 And run `bundle install` of course.
 
