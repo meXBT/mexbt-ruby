@@ -13,6 +13,9 @@ module Mexbt
       if Mexbt.public_key.nil? || Mexbt.private_key.nil?
         raise "You must configure your API keys!"
       end
+      if Mexbt.user_id.nil?
+        raise "You must configure your user_id!"
+      end
       nonce = (Time.now.to_f*10000).to_i
       {
         apiKey: Mexbt.public_key,

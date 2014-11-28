@@ -4,8 +4,23 @@ describe Mexbt::Private do
 
   context "without authentication" do
 
-    it "should raise a friendly error" do
+    after do
+      Mexbt.configure do |c|
+         c.public_key = nil
+         c.private_key = nil
+      end
+    end
+
+    it "should raise a friendly error if no keys are configured" do
       expect { Mexbt::Account.balance }.to raise_error("You must configure your API keys!")
+    end
+
+    it "should raise a friendly error if no user_id is configured" do
+      Mexbt.configure do |c|
+        c.public_key = "foo"
+        c.private_key = "bar"
+      end
+      expect { Mexbt::Account.balance }.to raise_error("You must configure your user_id!")
     end
 
   end
@@ -13,16 +28,19 @@ describe Mexbt::Private do
   context "with authentication" do
 
     before do
-      Mexbt.configure do | mexbt |
-        mexbt.public_key = "1d039abd0e667a4e03767ddef11cb8d5"
-        mexbt.private_key = "0e5a8d04838fc43f0f4335c8a380f200"
-        mexbt.user_id = "test@mexbt.com"
-        mexbt.sandbox = true
+      Mexbt.configure do |c|
+        c.public_key = "8a742b8ecaff21784d8d788119bded0e"
+        c.private_key = "e989fb9c1905a4fbd0a4bfe84230c9bc"
+        c.user_id = "test@mexbt.com"
+        c.sandbox = true
       end
     end
 
     after do
-      Mexbt.configure { | mexbt | mexbt.public_key = nil }
+      Mexbt.configure do |c|
+        c.public_key = nil
+        c.user_id = nil
+      end
     end
 
     context Mexbt::Account do
