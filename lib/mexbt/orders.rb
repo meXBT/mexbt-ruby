@@ -18,8 +18,7 @@ module Mexbt
         ins: currency_pair,
         side: side,
         orderType: type,
-        qty: amount,
-        sessionToken: "c545f765-ce47-4ea5-b206-a9ac0db55fc3"
+        qty: amount
       }
       params[:px] = price if price
       call("orders/create", params)
