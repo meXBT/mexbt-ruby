@@ -1,7 +1,9 @@
 PATH
   remote: .
   specs:
-    mexbt (0.0.1)
+    mexbt (0.0.3)
+      activesupport (>= 4.1.8)
+      rest_client (= 1.8.2)
 
 GEM
   remote: http://rubygems.org/
@@ -40,9 +42,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
   bundler (~> 1.6)
   mexbt!
   rake
-  rest_client
   rspec

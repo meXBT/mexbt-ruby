@@ -22,4 +22,46 @@ describe Mexbt do
     expect(res["trades"]).to eql([])
   end
 
+  context "simulating market orders" do
+
+    before do
+      allow(Mexbt).to receive(:order_book) do
+        {
+          "asks" => [{"px" => 1000, "qty" => 0.5}, {"px" => 2000, "qty" => 1}],
+          "bids" => [{"px" => 1000, "qty" => 0.5}, {"px" => 2000, "qty" => 1}]
+        }
+      end
+    end
+
+    it "calculates correctly buy orders with second_currency as the target currency" do
+      expect(Mexbt.simulate_market_order(second_currency: 100)["first_amount"]).to eql(0.1)
+      expect(Mexbt.simulate_market_order(second_currency: 500)["first_amount"]).to eql(0.5)
+      expect(Mexbt.simulate_market_order(second_currency: 600)["first_amount"]).to eql(0.55)
+      expect(Mexbt.simulate_market_order(second_currency: 1500)["first_amount"]).to eql(1.0)
+      expect(Mexbt.simulate_market_order(second_currency: 2500)["first_amount"]).to eql(1.5)
+      expect { Mexbt.simulate_market_order(second_currency: 2501)}.to raise_error("Order book does not contain enough orders to satify simulated order!")
+    end
+
+    it "calculates correctly buy orders with first_currency as the target currency" do
+      expect(Mexbt.simulate_market_order(first_currency: 0.5)["second_amount"]).to eql(500.0)
+      expect(Mexbt.simulate_market_order(first_currency: 1.5)["second_amount"]).to eql(2500.0)
+      expect(Mexbt.simulate_market_order(first_currency: 0.1)["second_amount"]).to eql(100.0)
+      expect(Mexbt.simulate_market_order(first_currency: 0.6)["second_amount"]).to eql(700.0)
+    end
+
+    it "calculates correctly sell orders with first_currency as the target currency" do
+      expect(Mexbt.simulate_market_order(side: :sell, first_currency: 0.01)["second_amount"]).to eql(20.0)
+      expect(Mexbt.simulate_market_order(side: :sell, first_currency: 0.1)["second_amount"]).to eql(200.0)
+      expect(Mexbt.simulate_market_order(side: :sell, first_currency: 1)["second_amount"]).to eql(2000.0)
+      expect(Mexbt.simulate_market_order(side: :sell, first_currency: 1.1)["second_amount"]).to eql(2100.0)
+      expect(Mexbt.simulate_market_order(side: :sell, first_currency: 1.4)["second_amount"]).to eql(2400.0)
+    end
+
+    it "calculates correctly sell orders with second_currency as the target currency" do
+      expect(Mexbt.simulate_market_order(side: :sell, second_currency: 1000)["first_amount"]).to eql(0.5)
+      expect(Mexbt.simulate_market_order(side: :sell, second_currency: 2001)["first_amount"]).to eql(1.001)
+      expect(Mexbt.simulate_market_order(side: :sell, second_currency: 2500)["first_amount"]).to eql(1.5)
+    end
+  end
+
 end

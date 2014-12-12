@@ -23,6 +23,8 @@ You can access all the Public API functions with zero configuration. By default 
     Mexbt.order_book
     Mexbt.trades(start_index: -1, count: 20)
     Mexbt.trades_by_date(from: Date.civil(2014, 11, 1).to_time.to_i, to: Date.today.to_time.to_i)
+    Mexbt.simulate_market_order(side: :buy, second_currency: 1000, currency_pair: 'btcmxn') # Simulates a market order, which will estimate how many btc you will receive for 1000 mxn
+    Mexbt.simulate_market_order(side: :buy, first_currency: 1, currency_pair: 'btcmxn') # Simulates a market order, which will estimate how many mxn you will spend for 1 btc
 
 If you want to choose another currency pair, you can configure it for all calls:
 

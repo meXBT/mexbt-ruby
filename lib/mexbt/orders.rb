@@ -44,5 +44,6 @@ module Mexbt
         end
       call("orders/modify", { ins: currency_pair, serverOrderId: id, modifyAction: action } )
     end
+
   end
 end

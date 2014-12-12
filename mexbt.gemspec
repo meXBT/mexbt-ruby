@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
-  spec.add_runtime_dependency "activesupport", ["= 4.1.8"]
+  spec.add_runtime_dependency "activesupport", [">= 4.1.8"]
   spec.add_runtime_dependency "rest_client", ["= 1.8.2"]
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
