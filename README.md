@@ -1,6 +1,6 @@
 # Mexbt ruby API client
 
-This is a lightweight ruby client for the Mexbt exchange API. It doesn't try and do anything clever with the JSON response from the API, it simply
+This is a lightweight ruby client for the [meXBT](https://mexbt.com) exchange API. It doesn't try and do anything clever with the JSON response from the API, it simply
 returns it as-is.
 
 # Install
