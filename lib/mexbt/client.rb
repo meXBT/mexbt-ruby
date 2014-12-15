@@ -1,4 +1,5 @@
 require 'rest_client'
+require 'active_support'
 
 module Mexbt
   module Client
@@ -31,11 +32,11 @@ module Mexbt
       if res.length === 0
         raise "Empty response from API"
       end
-      json_response = JSON.parse(res)
-      if json_response["isAccepted"]
+      json_response = ActiveSupport::HashWithIndifferentAccess.new(JSON.parse(res))
+      if json_response[:isAccepted]
         json_response
       else
-        raise json_response["rejectReason"]
+        raise json_response[:rejectReason]
       end
     end
   end

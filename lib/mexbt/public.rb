@@ -1,5 +1,6 @@
 require 'mexbt/client'
 require 'mexbt/common'
+require 'active_support'
 
 module Mexbt
   module Public
@@ -75,10 +76,11 @@ module Mexbt
       if sums[threshold_symbol] < threshold_target
         raise "Order book does not contain enough orders to satify simulated order!"
       end
-      {
-        "first_amount" => round(sums[:amount], currency_pair, :first),
-        "second_amount" => round(sums[:cost], currency_pair, :second)
+      res = {
+        first_amount: round(sums[:amount], currency_pair, :first),
+        second_amount: round(sums[:cost], currency_pair, :second)
       }
+      ActiveSupport::HashWithIndifferentAccess.new(res)
     end
 
     private
