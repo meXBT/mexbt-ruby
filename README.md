@@ -3,7 +3,7 @@
 This is a lightweight ruby client for the [meXBT](https://mexbt.com) exchange API. It doesn't try and do anything clever with the JSON response from the API, it simply
 returns it as-is.
 
-# Install
+## Install
 
 If using bundler simply this to your Gemfile:
 
@@ -11,11 +11,11 @@ If using bundler simply this to your Gemfile:
 
 And run `bundle install` of course.
 
-# Ruby version
+## Ruby version
 
 You need to be using Ruby 2.1 or higher.
 
-# Public API
+## Public API
 
 You can access all the Public API functions with zero configuration. By default they will use the 'BTCMXN' currency pair.
 
@@ -34,10 +34,10 @@ Or alternatively you can set it per call:
 
     Mexbt.ticker(currency_pair: 'BTCUSD')
 
-# Private API
+## Private API
 
 
-## Configuration
+### Configuration
 
 You need to generate an API key pair at https://mexbt.com/api/keys. However if you want to get started quickly we recommend having a play in the sandbox first, see the 'Sandbox' section below.
 
@@ -56,7 +56,7 @@ You need to generate an API key pair at https://mexbt.com/api/keys. However if y
     Mexbt::Orders.cancel(id: 123, currency_pair: 'btcmxn')
     Mexbt::Orders.cancel_all() # Cancel all orders for the default currency pair
 
-## Account functions
+### Account functions
 
     Mexbt::Account.balance
     Mexbt::Account.trades
@@ -64,7 +64,7 @@ You need to generate an API key pair at https://mexbt.com/api/keys. However if y
     Mexbt::Account.deposit_addresses
     Mexbt::Account.withdraw(amount: 1, currency: :btc, address: 'xxx')  Mexbt::Account.info # Fetches your user info
 
-## Sandbox
+### Sandbox
 
 It's a good idea to first play with the API in the sandbox, that way you don't need any real money to start trading with the API. Just make sure you configure `sandbox = true`.
 
@@ -72,7 +72,7 @@ You can register a sandbox account at https://sandbox.mexbt.com/en/register. It 
 
 Your sandbox account will automatically have a bunch of cash to play with.
 
-# API documentation
+## API documentation
 
 You can find API docs for the Public API at http://docs.mexbtpublicapi.apiary.io
 
@@ -81,7 +81,7 @@ API docs for the Private API are at http://docs.mexbtprivateapi.apiary.io
 There are also docs for the Private API sandbox at http://docs.mexbtprivateapisandbox.apiary.io
 
 
-# TODO
+## TODO
 
 Mock out web calls with WebMock so that specs don't break everytime sandbox db is cleaned.
 
