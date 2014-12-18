@@ -80,3 +80,8 @@ API docs for the Private API are at http://docs.mexbtprivateapi.apiary.io
 
 There are also docs for the Private API sandbox at http://docs.mexbtprivateapisandbox.apiary.io
 
+
+# TODO
+
+Mock out web calls with WebMock so that specs don't break everytime sandbox db is cleaned.
+
