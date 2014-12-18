@@ -5,6 +5,7 @@ require 'mexbt/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "mexbt"
+  spec.description   = "A lightweight ruby client for the meXBT exchange API"
   spec.version       = Mexbt::VERSION
   spec.authors       = ["williamcoates"]
   spec.email         = ["william@mexbt.com"]
