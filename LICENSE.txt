@@ -1,4 +1,4 @@
-Copyright (c) 2014 williamcoates
+Copyright (c) 2014 Exchange of the Americas SAPI de CV
 
 MIT License
 

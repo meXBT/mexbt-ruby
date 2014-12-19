@@ -29,8 +29,8 @@ describe Mexbt::Private do
 
     before do
       Mexbt.configure do |c|
-        c.public_key = "8a742b8ecaff21784d8d788119bded0e"
-        c.private_key = "e989fb9c1905a4fbd0a4bfe84230c9bc"
+        c.public_key = "56dd4872e23f9e326c0184552791f6f7"
+        c.private_key = "23a9814d6cf3cbb641bc41eb0b2115de"
         c.user_id = "test@mexbt.com"
         c.sandbox = true
       end
@@ -58,6 +58,12 @@ describe Mexbt::Private do
 
       it "allows creating market orders" do
         res = Mexbt::Orders.create(amount: 0.1, currency_pair: "BTCUSD")
+        expect(res["isAccepted"]).to be true
+        expect(res["serverOrderId"]).to be_a(Fixnum)
+      end
+
+      it "allows creating orders with 8 decimal places" do
+        res = Mexbt::Orders.create(amount: 0.12345678, currency_pair: "BTCUSD")
         expect(res["isAccepted"]).to be true
         expect(res["serverOrderId"]).to be_a(Fixnum)
       end

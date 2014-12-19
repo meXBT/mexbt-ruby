@@ -5,6 +5,10 @@ module Mexbt
     include Mexbt::Private
 
     def create(amount:, price: nil, currency_pair: Mexbt.currency_pair, side: :buy, type: :market)
+      # Horribly hack because sandbox only accepts 6 decimal places thanks to AP
+      if Mexbt.sandbox
+        amount = BigDecimal.new(amount, 15).round(6).to_f
+      end
       type =
         case type
         when :market, 1
