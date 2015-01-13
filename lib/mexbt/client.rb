@@ -39,5 +39,10 @@ module Mexbt
         raise json_response[:rejectReason]
       end
     end
+
+    def call_data(path)
+      res = Request.execute(method: :get, url: "https://data.mexbt.com/#{path}", ssl_version: SSL_VERSION)
+      ActiveSupport::HashWithIndifferentAccess.new(JSON.parse(res))
+    end
   end
 end

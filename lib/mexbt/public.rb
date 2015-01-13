@@ -16,7 +16,21 @@ module Mexbt
     end
 
     def order_book(currency_pair: Mexbt.currency_pair)
-      call("order-book", { productPair: currency_pair })
+      begin
+        call("order-book", { productPair: currency_pair })
+      rescue => e
+        if currency_pair.to_s.downcase === "btcmxn"
+          data_order_book = call_data("order-book/btcmxn")
+          mapper = Proc.new do |o|
+            {px: o.first, qty: o.last}
+          end
+          data_order_book[:asks] = data_order_book[:asks].map(&mapper)
+          data_order_book[:bids] = data_order_book[:bids].map(&mapper)
+          data_order_book
+        else
+          raise e
+        end
+      end
     end
 
     alias :orders :order_book

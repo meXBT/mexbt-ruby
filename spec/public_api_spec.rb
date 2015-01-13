@@ -22,6 +22,20 @@ describe Mexbt do
     expect(res["trades"]).to eql([])
   end
 
+  it "fetches btcmxn order book data from data API if AP API down" do
+    expect(Mexbt).to receive(:call).with("order-book", { productPair: :btcmxn }).and_raise("Boom")
+    order_book = Mexbt.order_book
+    expect(order_book["asks"].first["px"]).to be_a_kind_of(Numeric)
+    expect(order_book["asks"].first["qty"]).to be_a_kind_of(Numeric)
+    expect(order_book["bids"].first["px"]).to be_a_kind_of(Numeric)
+    expect(order_book["bids"].first["qty"]).to be_a_kind_of(Numeric)
+  end
+
+  it "simulates market order using data api data if AP API down" do
+    expect(Mexbt).to receive(:call).with("order-book", { productPair: :btcmxn }).and_raise("Boom")
+    expect(Mexbt.simulate_market_order(second_currency: 100)["first_amount"]).to be_a_kind_of(Numeric)
+  end
+
   context "simulating market orders" do
 
     before do
