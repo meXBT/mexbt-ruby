@@ -19,20 +19,26 @@ You need to be using Ruby 2.1 or higher.
 
 You can access all the Public API functions with zero configuration. By default they will use the 'BTCMXN' currency pair.
 
-    Mexbt.ticker
-    Mexbt.order_book
-    Mexbt.trades(start_index: -1, count: 20)
-    Mexbt.trades_by_date(from: Date.civil(2014, 11, 1).to_time.to_i, to: Date.today.to_time.to_i)
-    Mexbt.simulate_market_order(side: :buy, second_currency: 1000, currency_pair: 'btcmxn') # Simulates a market order, which will estimate how many btc you will receive for 1000 mxn
-    Mexbt.simulate_market_order(side: :buy, first_currency: 1, currency_pair: 'btcmxn') # Simulates a market order, which will estimate how many mxn you will spend for 1 btc
+```ruby
+Mexbt.ticker
+Mexbt.order_book
+Mexbt.trades(start_index: -1, count: 20)
+Mexbt.trades_by_date(from: Date.civil(2014, 11, 1).to_time.to_i, to: Date.today.to_time.to_i)
+Mexbt.simulate_market_order(side: :buy, second_currency: 1000, currency_pair: 'btcmxn') # Simulates a market order, which will estimate how many btc you will receive for 1000 mxn
+Mexbt.simulate_market_order(side: :buy, first_currency: 1, currency_pair: 'btcmxn') # Simulates a market order, which will estimate how many mxn you will spend for 1 btc
+```
 
 If you want to choose another currency pair, you can configure it for all calls:
 
-    Mexbt.configure { |c| c.currency_pair: 'BTCUSD' }
+```ruby
+Mexbt.configure { |c| c.currency_pair: 'BTCUSD' }
+```
 
 Or alternatively you can set it per call:
 
-    Mexbt.ticker(currency_pair: 'BTCUSD')
+```ruby
+Mexbt.ticker(currency_pair: 'BTCUSD')
+```
 
 ## Private API
 
@@ -41,28 +47,34 @@ Or alternatively you can set it per call:
 
 You need to generate an API key pair at https://mexbt.com/api/keys. However if you want to get started quickly we recommend having a play in the sandbox first, see the 'Sandbox' section below.
 
-    Mexbt.configure do |c|
-        mexbt.public_key = "xxx"
-        mexbt.private_key = "yyy"
-        mexbt.user_id = "email@test.com" # Your registered email address
-        mexbt.sandbox = true # Set this to true to use the sandbox
-    end
+```ruby
+Mexbt.configure do |c|
+    mexbt.public_key = "xxx"
+    mexbt.private_key = "yyy"
+    mexbt.user_id = "email@test.com" # Your registered email address
+    mexbt.sandbox = true # Set this to true to use the sandbox
+end
+```
 
 ## Order functions
 
-    Mexbt::Orders.create(amount: 0.1, currency_pair: 'btcmxn') # Create a market buy order for 0.1 BTC for Pesos
-    Mexbt::Orders.create(amount: 2, side: :sell, currency_pair: 'btcusd') # Create a market order to sell 2 BTC for USD
-    Mexbt::Orders.create(amount: 2, price: 1, side: :buy, type: :limit, currency_pair: 'ltcmxn') # Create a limit order to buy 2 LTC for 1 peso
-    Mexbt::Orders.cancel(id: 123, currency_pair: 'btcmxn')
-    Mexbt::Orders.cancel_all() # Cancel all orders for the default currency pair
+```ruby
+Mexbt::Orders.create(amount: 0.1, currency_pair: 'btcmxn') # Create a market buy order for 0.1 BTC for Pesos
+Mexbt::Orders.create(amount: 2, side: :sell, currency_pair: 'btcusd') # Create a market order to sell 2 BTC for USD
+Mexbt::Orders.create(amount: 2, price: 1, side: :buy, type: :limit, currency_pair: 'ltcmxn') # Create a limit order to buy 2 LTC for 1 peso
+Mexbt::Orders.cancel(id: 123, currency_pair: 'btcmxn')
+Mexbt::Orders.cancel_all() # Cancel all orders for the default currency pair
+```
 
 ### Account functions
 
-    Mexbt::Account.balance
-    Mexbt::Account.trades
-    Mexbt::Account.orders
-    Mexbt::Account.deposit_addresses
-    Mexbt::Account.withdraw(amount: 1, currency: :btc, address: 'xxx')  Mexbt::Account.info # Fetches your user info
+```ruby
+Mexbt::Account.balance
+Mexbt::Account.trades
+Mexbt::Account.orders
+Mexbt::Account.deposit_addresses
+Mexbt::Account.withdraw(amount: 1, currency: :btc, address: 'xxx')  Mexbt::Account.info # Fetches your user info
+```
 
 ### Sandbox
 
