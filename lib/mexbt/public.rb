@@ -18,7 +18,7 @@ module Mexbt
     def order_book(currency_pair: Mexbt.currency_pair)
       begin
         call("order-book", { productPair: currency_pair })
-      rescue => e
+      rescue RestClient::RequestFailed => e
         if currency_pair.to_s.downcase === "btcmxn"
           data_order_book = call_data("order-book/btcmxn")
           mapper = Proc.new do |o|
