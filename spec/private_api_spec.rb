@@ -86,6 +86,14 @@ describe Mexbt::Account do
       expect { account.create_order(type: :boom, amount: 0.2) }.to raise_error("Unknown order type 'boom'")
     end
 
+    it "returns the btc deposit address" do
+      expect(account.btc_deposit_address).to eql("SIM MODE - No addresses in Sim Mode")
+    end
+
+    it "returns the ltc deposit address" do
+      expect(account.ltc_deposit_address).to eql("SIM MODE - No addresses in Sim Mode")
+    end
+
     context "modifying and cancelling orders" do
 
       let(:order_id) {account.create_order(type: :limit, price: 100, amount: 0.1, currency_pair: "BTCUSD")[:serverOrderId]}

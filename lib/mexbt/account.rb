@@ -31,6 +31,13 @@ module Mexbt
       end
     end
 
+    %w{btc ltc}.each do |c|
+      define_method(:"#{c}_deposit_address") do
+        res = call("deposit-addresses")
+        res[:addresses].find { |address_info| address_info[:name].downcase === c }[:depositAddress]
+      end
+    end
+
     def withdraw(amount:, address:, currency: :btc)
       call("withdraw", { ins: currency, amount: amount, sentToAddress: address })
     end

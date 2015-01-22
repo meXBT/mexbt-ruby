@@ -90,6 +90,8 @@ account.cancel_all_orders() # Cancel all orders for the default currency pair
 account.balance
 account.trades
 account.orders
+account.btc_deposit_address
+account.ltc_deposit_address
 account.deposit_addresses
 account.withdraw(amount: 1, currency: :btc, address: 'xxx')
 account.info # Fetches your user info
