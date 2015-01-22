@@ -1,4 +1,4 @@
-# Mexbt ruby API client
+# Mexbt ruby API client [![Build Status](https://travis-ci.org/meXBT/mexbt-ruby.svg?branch=master)](https://travis-ci.org/meXBT/mexbt-ruby)
 
 This is a lightweight ruby client for the [meXBT](https://mexbt.com) exchange API. It doesn't try and do anything clever with the JSON response from the API, it simply
 returns it as-is.
