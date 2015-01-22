@@ -13,7 +13,7 @@ And run `bundle install` of course.
 
 ## Ruby version
 
-You need to be using Ruby 2.1 or higher.
+You need to be using Ruby 2.1.2 or higher.
 
 ## Public API
 
