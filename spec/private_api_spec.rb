@@ -1,8 +1,10 @@
 require 'spec_helper'
 
-describe Mexbt::Private do
+describe Mexbt::Account do
 
   context "without authentication" do
+
+    subject(:account) { Mexbt::Account.new }
 
     after do
       Mexbt.configure do |c|
@@ -12,7 +14,7 @@ describe Mexbt::Private do
     end
 
     it "should raise a friendly error if no keys are configured" do
-      expect { Mexbt::Account.balance }.to raise_error("You must configure your API keys!")
+      expect { account.balance }.to raise_error("You must configure your API keys!")
     end
 
     it "should raise a friendly error if no user_id is configured" do
@@ -20,17 +22,29 @@ describe Mexbt::Private do
         c.public_key = "foo"
         c.private_key = "bar"
       end
-      expect { Mexbt::Account.balance }.to raise_error("You must configure your user_id!")
+      expect { account.balance }.to raise_error("You must configure your user_id!")
+    end
+
+  end
+
+  context "with per-instance authentication" do
+
+    subject(:account) { Mexbt::Account.new(public_key: "fa4ed1ce8040f66b1bf8708aedff3c16", private_key: "09c4aa0a971eb453378768e7d2d4147e", user_id: "test@mexbt.com", sandbox: true) }
+
+    it "still works" do
+      expect(account.info[:isAccepted]).to be true
     end
 
   end
 
   context "with authentication" do
 
+    subject(:account) { Mexbt::Account.new }
+
     before do
       Mexbt.configure do |c|
-        c.public_key = "56dd4872e23f9e326c0184552791f6f7"
-        c.private_key = "23a9814d6cf3cbb641bc41eb0b2115de"
+        c.public_key = "fa4ed1ce8040f66b1bf8708aedff3c16"
+        c.private_key = "09c4aa0a971eb453378768e7d2d4147e"
         c.user_id = "test@mexbt.com"
         c.sandbox = true
       end
@@ -43,82 +57,74 @@ describe Mexbt::Private do
       end
     end
 
-    context Mexbt::Account do
-
-      it "gives a valid response to all public api functions that require no args" do
-        %w{info balance orders deposit_addresses trades}.each do |f|
-          res = Mexbt::Account.send(f)
-          expect(res["isAccepted"]).to be true
-        end
+    it "gives a valid response to all api functions that require no args" do
+      %w{info balance orders deposit_addresses trades}.each do |f|
+        res = account.send(f)
+        expect(res[:isAccepted]).to be true
       end
-
     end
 
-    context Mexbt::Orders do
+    it "allows creating market orders" do
+      res = account.create_order(amount: 0.1, currency_pair: "BTCUSD")
+      expect(res[:isAccepted]).to be true
+      expect(res[:serverOrderId]).to be_a(Fixnum)
+    end
 
-      it "allows creating market orders" do
-        res = Mexbt::Orders.create(amount: 0.1, currency_pair: "BTCUSD")
-        expect(res["isAccepted"]).to be true
-        expect(res["serverOrderId"]).to be_a(Fixnum)
+    it "allows creating orders with 8 decimal places" do
+      res = account.create_order(amount: 0.12345678, currency_pair: "BTCUSD")
+      expect(res[:isAccepted]).to be true
+      expect(res[:serverOrderId]).to be_a(Fixnum)
+    end
+
+    it "allows creating limit orders" do
+      res = account.create_order(type: :limit, price: 100, amount: 0.1234, currency_pair: "BTCUSD")
+      expect(res[:isAccepted]).to be true
+      expect(res[:serverOrderId]).to be_a(Fixnum)
+    end
+
+    it "raises an exception if order type not recognised" do
+      expect { account.create_order(type: :boom, amount: 0.2) }.to raise_error("Unknown order type 'boom'")
+    end
+
+    context "modifying and cancelling orders" do
+
+      let(:order_id) {account.create_order(type: :limit, price: 100, amount: 0.1, currency_pair: "BTCUSD")[:serverOrderId]}
+
+      it "allows converting limit orders to market orders" do
+        res = account.modify_order(id: order_id, currency_pair: "BTCUSD", action: :execute_now)
+        expect(res[:isAccepted]).to be true
       end
 
-      it "allows creating orders with 8 decimal places" do
-        res = Mexbt::Orders.create(amount: 0.12345678, currency_pair: "BTCUSD")
-        expect(res["isAccepted"]).to be true
-        expect(res["serverOrderId"]).to be_a(Fixnum)
+      it "allows moving orders to the top of the book" do
+        res = account.modify_order(id: order_id, currency_pair: "BTCUSD", action: :move_to_top)
+        expect(res[:isAccepted]).to be true
       end
 
-      it "allows creating limit orders" do
-        res = Mexbt::Orders.create(type: :limit, price: 100, amount: 0.1234, currency_pair: "BTCUSD")
-        expect(res["isAccepted"]).to be true
-        expect(res["serverOrderId"]).to be_a(Fixnum)
-      end
-
-      it "raises an exception if order type not recognised" do
-        expect { Mexbt::Orders.create(type: :boom, amount: 0.2) }.to raise_error("Unknown order type 'boom'")
-      end
-
-      context "modifying and cancelling orders" do
-
-        let(:order_id) {Mexbt::Orders.create(type: :limit, price: 100, amount: 0.1, currency_pair: "BTCUSD")["serverOrderId"]}
-
-        it "allows converting limit orders to market orders" do
-          res = Mexbt::Orders.modify(id: order_id, currency_pair: "BTCUSD", action: :execute_now)
-          expect(res["isAccepted"]).to be true
-        end
-
-        it "allows moving orders to the top of the book" do
-          res = Mexbt::Orders.modify(id: order_id, currency_pair: "BTCUSD", action: :move_to_top)
-          expect(res["isAccepted"]).to be true
-        end
-
-        it "allows cancelling individual orders" do
-          res = Mexbt::Orders.cancel(id: order_id, currency_pair: "BTCUSD")
-          expect(res["isAccepted"]).to be true
-          orders = Mexbt::Account.orders["openOrdersInfo"]
-          orders.each do |open_orders|
-            if open_orders["ins"] === "BTCUSD"
-              open_orders["openOrders"].each do |usd_order|
-                if usd_order["ServerOrderId"] === order_id
-                  fail("Order was cancelled but still open")
-                end
+      it "allows cancelling individual orders" do
+        res = account.cancel_order(id: order_id, currency_pair: "BTCUSD")
+        expect(res[:isAccepted]).to be true
+        orders = account.orders[:openOrdersInfo]
+        orders.each do |open_orders|
+          if open_orders[:ins] === "BTCUSD"
+            open_orders[:openOrders].each do |usd_order|
+              if usd_order[:ServerOrderId] === order_id
+                fail("Order was cancelled but still open")
               end
             end
           end
         end
+      end
 
-        it "allows cancelling all orders" do
-          res = Mexbt::Orders.cancel_all(currency_pair: "BTCUSD")
-          expect(res["isAccepted"]).to be true
-          orders = Mexbt::Account.orders["openOrdersInfo"]
-          orders.each do |open_orders|
-            if open_orders["ins"] === "BTCUSD"
-              expect(open_orders["openOrders"]).to eql([])
-            end
+      it "allows cancelling all orders" do
+        res = account.cancel_all_orders(currency_pair: "BTCUSD")
+        expect(res[:isAccepted]).to be true
+        orders = account.orders[:openOrdersInfo]
+        orders.each do |open_orders|
+          if open_orders[:ins] === "BTCUSD"
+            expect(open_orders[:openOrders]).to eql([])
           end
         end
       end
-
     end
 
   end

@@ -1,8 +1,8 @@
+require 'active_support'
 require 'active_support/core_ext'
 require 'active_support/inflector'
 require 'mexbt/public'
 require 'mexbt/account'
-require 'mexbt/orders'
 
 module Mexbt
   mattr_accessor :public_key
@@ -19,12 +19,6 @@ module Mexbt
 
   extend Mexbt::Public
 
-  module Account
-    extend Mexbt::Account
-  end
-
-  module Orders
-    extend Mexbt::Orders
-  end
-
 end
+
+

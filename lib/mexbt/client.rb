@@ -10,18 +10,30 @@ module Mexbt
       "#{endpoint()}/v1/#{path}"
     end
 
+    def public_key
+      @public_key || Mexbt.public_key
+    end
+
+    def private_key
+      @private_key || Mexbt.private_key
+    end
+
+    def user_id
+      @user_id || Mexbt.user_id
+    end
+
     def auth_params
-      if Mexbt.public_key.nil? || Mexbt.private_key.nil?
+      if public_key.nil? || private_key.nil?
         raise "You must configure your API keys!"
       end
-      if Mexbt.user_id.nil?
+      if user_id.nil?
         raise "You must configure your user_id!"
       end
       nonce = (Time.now.to_f*10000).to_i
       {
-        apiKey: Mexbt.public_key,
+        apiKey: public_key,
         apiNonce: nonce,
-        apiSig: OpenSSL::HMAC.hexdigest('sha256', Mexbt.private_key, "#{nonce}#{Mexbt.user_id}#{Mexbt.public_key}").upcase
+        apiSig: OpenSSL::HMAC.hexdigest('sha256', private_key, "#{nonce}#{user_id}#{public_key}").upcase
       }
     end
 

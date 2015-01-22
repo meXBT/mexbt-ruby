@@ -42,10 +42,13 @@ Mexbt.ticker(currency_pair: 'BTCUSD')
 
 ## Private API
 
-
-### Configuration
+### API Keys
 
 You need to generate an API key pair at https://mexbt.com/api/keys. However if you want to get started quickly we recommend having a play in the sandbox first, see the 'Sandbox' section below.
+
+### Static configuration
+
+If you will only be using one account in your application, it's easier to configure statically:
 
 ```ruby
 Mexbt.configure do |c|
@@ -56,24 +59,40 @@ Mexbt.configure do |c|
 end
 ```
 
+Then to access private functions just instantiate an instance of Mexbt::Account:
+
+```ruby
+Mexbt::Account.new.info
+```
+
+### Per-instance configuration
+
+If you need to manage multiple meXBT accounts you should configure per each instance of Mexbt::Account:
+
+```ruby
+account = Mexbt::Account.new(public_key: 'xxx', private_key: 'yyy', user_id: 'email@test.com', sandbox: true)
+account.balance
+```
+
 ## Order functions
 
 ```ruby
-Mexbt::Orders.create(amount: 0.1, currency_pair: 'btcmxn') # Create a market buy order for 0.1 BTC for Pesos
-Mexbt::Orders.create(amount: 2, side: :sell, currency_pair: 'btcusd') # Create a market order to sell 2 BTC for USD
-Mexbt::Orders.create(amount: 2, price: 1, side: :buy, type: :limit, currency_pair: 'ltcmxn') # Create a limit order to buy 2 LTC for 1 peso
-Mexbt::Orders.cancel(id: 123, currency_pair: 'btcmxn')
-Mexbt::Orders.cancel_all() # Cancel all orders for the default currency pair
+account.create_order(amount: 0.1, currency_pair: 'btcmxn') # Create a market buy order for 0.1 BTC for Pesos
+account.create_order(amount: 2, side: :sell, currency_pair: 'btcusd') # Create a market order to sell 2 BTC for USD
+account.create_order(amount: 2, price: 1, side: :buy, type: :limit, currency_pair: 'ltcmxn') # Create a limit order to buy 2 LTC for 1 peso
+account.cancel_order(id: 123, currency_pair: 'btcmxn')
+account.cancel_all_orders() # Cancel all orders for the default currency pair
 ```
 
 ### Account functions
 
 ```ruby
-Mexbt::Account.balance
-Mexbt::Account.trades
-Mexbt::Account.orders
-Mexbt::Account.deposit_addresses
-Mexbt::Account.withdraw(amount: 1, currency: :btc, address: 'xxx')  Mexbt::Account.info # Fetches your user info
+account.balance
+account.trades
+account.orders
+account.deposit_addresses
+account.withdraw(amount: 1, currency: :btc, address: 'xxx')
+account.info # Fetches your user info
 ```
 
 ### Sandbox
@@ -91,7 +110,6 @@ You can find API docs for the Public API at http://docs.mexbtpublicapi.apiary.io
 API docs for the Private API are at http://docs.mexbtprivateapi.apiary.io
 
 There are also docs for the Private API sandbox at http://docs.mexbtprivateapisandbox.apiary.io
-
 
 ## TODO
 
