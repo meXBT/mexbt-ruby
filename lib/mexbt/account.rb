@@ -39,7 +39,7 @@ module Mexbt
     end
 
     def withdraw(amount:, address:, currency: :btc)
-      call("withdraw", { ins: currency, amount: amount, sentToAddress: address })
+      call("withdraw", { ins: currency, amount: amount, sendToAddress: address })
     end
 
     def create_order(amount:, price: nil, currency_pair: Mexbt.currency_pair, side: :buy, type: :market)
