@@ -29,7 +29,7 @@ describe Mexbt::Account do
 
   context "with per-instance authentication" do
 
-    subject(:account) { Mexbt::Account.new(public_key: "fa4ed1ce8040f66b1bf8708aedff3c16", private_key: "09c4aa0a971eb453378768e7d2d4147e", user_id: "test@mexbt.com", sandbox: true) }
+    subject(:account) { Mexbt::Account.new(public_key: "62e78ef68b20bc1db55e56cd7cb675df", private_key: "b4bf685ab83a0a4017cdf471e4d410e1", user_id: "test@mexbt.com", sandbox: true) }
 
     it "still works" do
       expect(account.info[:isAccepted]).to be true
@@ -43,8 +43,8 @@ describe Mexbt::Account do
 
     before do
       Mexbt.configure do |c|
-        c.public_key = "fa4ed1ce8040f66b1bf8708aedff3c16"
-        c.private_key = "09c4aa0a971eb453378768e7d2d4147e"
+        c.public_key = "62e78ef68b20bc1db55e56cd7cb675df"
+        c.private_key = "b4bf685ab83a0a4017cdf471e4d410e1"
         c.user_id = "test@mexbt.com"
         c.sandbox = true
       end
