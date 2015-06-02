@@ -40,6 +40,12 @@ module Mexbt
 
     def withdraw(amount:, address:, currency: :btc)
       call("withdraw", { ins: currency, amount: format_amount(amount), sendToAddress: address })
+    rescue RuntimeError => e
+      if sandbox
+        puts "Withdrawals do not yet work on the sandbox :( Let's pretend..."
+      else
+        raise e
+      end
     end
 
     def create_order(amount:, price: nil, currency_pair: Mexbt.currency_pair, side: :buy, type: :market)
