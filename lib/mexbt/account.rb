@@ -39,12 +39,11 @@ module Mexbt
     end
 
     def withdraw(amount:, address:, currency: :btc)
-      call("withdraw", { ins: currency, amount: amount, sendToAddress: address })
+      call("withdraw", { ins: currency, amount: format_amount(amount), sendToAddress: address })
     end
 
     def create_order(amount:, price: nil, currency_pair: Mexbt.currency_pair, side: :buy, type: :market)
-      # Horribly hack because sandbox only accepts 6 decimal places thanks to AP
-      amount = BigDecimal.new(amount, 15).round(6).to_f if sandbox
+      amount = format_amount(amount)
       type =
         case type
         when :market, 1
@@ -83,6 +82,17 @@ module Mexbt
           raise "Action must be one of: :move_to_top, :execute_now"
         end
       call("orders/modify", { ins: currency_pair, serverOrderId: id, modifyAction: action } )
+    end
+
+    private
+
+    def format_amount(amount)
+      if sandbox
+        # Horribly hack because sandbox only accepts 6 decimal places thanks to AP
+        BigDecimal.new(amount, 15).round(6).to_f
+      else
+        amount
+      end
     end
   end
 end
