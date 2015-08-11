@@ -93,12 +93,8 @@ module Mexbt
     private
 
     def format_amount(amount)
-      if sandbox
-        # Horribly hack because sandbox only accepts 6 decimal places thanks to AP
-        BigDecimal.new(amount, 15).round(6).to_f
-      else
-        amount
-      end
+      # Horribly hack because sandbox only accepts 6 decimal places thanks to AP
+      BigDecimal.new(amount, 15).round(sandbox ? 6 : 8).to_s
     end
   end
 end

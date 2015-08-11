@@ -1,5 +1,4 @@
 require 'rest_client'
-require 'active_support/core_ext/hash/indifferent_access'
 
 module Mexbt
   module Client

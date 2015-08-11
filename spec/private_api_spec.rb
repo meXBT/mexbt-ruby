@@ -29,7 +29,7 @@ describe Mexbt::Account do
 
   context "with per-instance authentication" do
 
-    subject(:account) { Mexbt::Account.new(public_key: "62e78ef68b20bc1db55e56cd7cb675df", private_key: "b4bf685ab83a0a4017cdf471e4d410e1", user_id: "test@mexbt.com", sandbox: true) }
+    subject(:account) { Mexbt::Account.new(public_key: "b202ba1efcfd3dd1ceef0e7961d21c05", private_key: "0dca4a65faf9005c5743df92309747b2", user_id: "specs@mexbt.com", sandbox: true) }
 
     it "still works" do
       expect(account.info[:isAccepted]).to be true
@@ -43,9 +43,9 @@ describe Mexbt::Account do
 
     before do
       Mexbt.configure do |c|
-        c.public_key = "62e78ef68b20bc1db55e56cd7cb675df"
-        c.private_key = "b4bf685ab83a0a4017cdf471e4d410e1"
-        c.user_id = "test@mexbt.com"
+        c.public_key = "b202ba1efcfd3dd1ceef0e7961d21c05"
+        c.private_key = "0dca4a65faf9005c5743df92309747b2"
+        c.user_id = "specs@mexbt.com"
         c.sandbox = true
       end
     end
@@ -72,6 +72,12 @@ describe Mexbt::Account do
 
     it "allows creating orders with 8 decimal places" do
       res = account.create_order(amount: 0.12345678, currency_pair: "BTCUSD")
+      expect(res[:isAccepted]).to be true
+      expect(res[:serverOrderId]).to be_a(Fixnum)
+    end
+
+    it "rounds orders with more than 8 decimal places" do
+      res = account.create_order(amount: 0.12345678910, currency_pair: "BTCUSD")
       expect(res[:isAccepted]).to be true
       expect(res[:serverOrderId]).to be_a(Fixnum)
     end
